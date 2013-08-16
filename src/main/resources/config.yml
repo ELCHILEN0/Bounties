@@ -1,0 +1,14 @@
+settings:
+  save-interval: 60
+database:
+  type: sqlite
+  mysql:
+    host: localhost
+    port: 3306
+    username: root
+    password: root
+    database: minecraft
+  sqlite:
+    file: data.sqlite
+  h2:
+    database: elchilen0

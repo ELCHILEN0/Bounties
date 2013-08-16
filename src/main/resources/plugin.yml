@@ -1,0 +1,9 @@
+name: ${project.name}
+version: ${project.version}
+description: ${project.description}
+website: ${project.url}
+authors: [ELCHILEN0]
+main: com.TeamNovus.Bounties.Bounties
+commands:
+  bounties:
+    aliases: [bounty, bn]
