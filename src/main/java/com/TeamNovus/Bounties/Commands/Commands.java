@@ -34,14 +34,6 @@ public class Commands {
 		}
 	}
 
-	/*
-	 * This method gets a command fromt he specified arguments passed to it.
-	 * 
-	 * All parts of the command are passed to method as labels.  A command typed as
-	 * 		/command arg1 arg2 arg3
-	 * will be made into an array as
-	 * 		[command, arg1, arg2, arg3]
-	 */
 	public static Command getCommand(String... labels) {
 		Command lastCommand = null;
 
@@ -85,6 +77,54 @@ public class Commands {
 		}
 
 		return lastCommand;
+	}
+	
+	public static String[] getLabels(String... labels) {
+		String[] trueLabels = ArrayUtils.EMPTY_STRING_ARRAY;
+		
+		Command lastCommand = null;
+		
+		for (int i = 0; i < labels.length; i++) {
+			String label = labels[i];
+			Command nextCommand = null;
+			
+			if(i == 0) {
+				// If we are on a base level then iterate through every command that does not have a parent.
+				for(Command command : commands) {
+					if(!(command.hasParentCommand())) {
+						if(Arrays.asList(command.getAliases()).contains(label)) {
+							nextCommand = command;
+							
+							continue;
+						}
+					}
+				}
+			} else {
+				// Otherwise iterate through every command that is a child of lastCommand.
+				for(Command command : lastCommand.getSubCommands()) {
+					if(ArrayUtils.contains(command.getAliases(), label)) {
+						nextCommand = command;
+						
+						continue;
+					}
+				}
+			}	
+			
+			// If no command was found through the iteration then break out of the loop.
+			if(nextCommand == null) {
+				break;
+			}
+			
+			lastCommand = nextCommand;
+			trueLabels = (String[]) ArrayUtils.add(trueLabels, label);
+			
+			// If the command has no children commands then break out of the loop
+			if(!(nextCommand.hasSubCommand())) {
+				break;
+			}
+		}
+
+		return trueLabels;
 	}
 	
 	public static String[] getArgs(String... labels) {

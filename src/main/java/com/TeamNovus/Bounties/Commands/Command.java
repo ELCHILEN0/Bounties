@@ -3,18 +3,21 @@ package com.TeamNovus.Bounties.Commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public abstract class Command {
 	private Command 	parent;
 	private String[] 	aliases;
+	private int			min;
+	private int			max;
 	private String		description;
 	private String 		usage;
 	private String		usageMessage;
 	private String 		permission;
 	private String		permissionMessage;
-	private boolean		allowPlayer = true;
-	private boolean 	allowConsole = true;
+	private boolean		allowPlayer;
+	private boolean 	allowConsole;
 	private String		playerDisallowedMessage;
 	private String		consoleDisallowedMessage;
 	
@@ -32,6 +35,17 @@ public abstract class Command {
 		}
 		
 		this.aliases = aliases;
+		this.description = "";
+		this.min = 0;
+		this.max = -1;
+		this.usage = "";
+		this.usageMessage = "";
+		this.permission = "";
+		this.permissionMessage = ChatColor.RED + "You do not have permission for this command!";
+		this.allowPlayer = true;
+		this.allowConsole = true;
+		this.playerDisallowedMessage = ChatColor.RED + "This command cannot be run as a player!";
+		this.consoleDisallowedMessage = ChatColor.RED + "This command cannot be run from the console!";
 	}
 	
 	public Command(String... aliases) throws InstantiationException {
@@ -66,30 +80,24 @@ public abstract class Command {
 		return this;
 	}
 	
-	public int getMinArgs() {
-		String[] args = usage.split(" ");
-		
-		int count = 0;
-		
-		for (String arg : args) {
-			if(arg.startsWith("<") && arg.endsWith(">")) 
-				count++;
-		}
-		
-		return count;
+	public int getMin() {
+		return min;
 	}
 	
-	public int getMaxArgs() {
-		String[] args = usage.split(" ");
+	public Command setMin(int min) {
+		this.min = min;
 		
-		int count = 0;
+		return this;
+	}
+	
+	public int getMax() {
+		return max;
+	}
+	
+	public Command setMax(int max) {
+		this.max = max;
 		
-		for (String arg : args) {
-			if((arg.startsWith("<") && arg.endsWith(">")) || (arg.startsWith("[") && arg.endsWith("]"))) 
-				count++;
-		}
-		
-		return count;
+		return this;
 	}
 	
 	public String getUsageMessage() {
@@ -208,6 +216,9 @@ public abstract class Command {
 		Commands.register(this);
 	}
 	
-	public abstract void onCommand(String[] labels, CommandSender sender, String[] args);
-	public abstract List<String> onTabComplete();
+	public void onCommand(String[] labels, CommandSender sender, String[] args) { }
+	
+	public List<String> onTabComplete(String[] labels, CommandSender sender, String[] args) {
+		return new ArrayList<String>();
+	}
 }
